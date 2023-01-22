@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31402.337
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BDMJClient_Single", "BDMJClient_Single.csproj", "{6AE09D16-541C-4734-9148-C1E0C34E536B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6AE09D16-541C-4734-9148-C1E0C34E536B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6AE09D16-541C-4734-9148-C1E0C34E536B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6AE09D16-541C-4734-9148-C1E0C34E536B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6AE09D16-541C-4734-9148-C1E0C34E536B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {00CD9BB4-DB75-4065-A424-C477BB4B89B7}
+	EndGlobalSection
+EndGlobal
