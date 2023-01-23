@@ -26,19 +26,19 @@ namespace BDMJClient_Single
         {
             InitializeComponent();
             Dong.Zuowei.Text = "东";
-            //using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("testpipe", PipeDirection.InOut))
-            //{
-            //    pipeServer.WaitForConnection();
+            using (NamedPipeServerStream pipeServer = new NamedPipeServerStream("testpipe", PipeDirection.InOut))
+            {
+                pipeServer.WaitForConnection();
 
-            //    var data = new byte[10240];
-            //    var count = pipeServer.Read(data, 0, 10240);
+                var data = new byte[10240];
+                var count = pipeServer.Read(data, 0, 10240);
 
-            //    using (StreamWriter sw = new StreamWriter(pipeServer))
-            //    {
-            //        sw.AutoFlush = true;
-            //        sw.WriteLine("send to client");
-            //    }
-            //}
+                using (StreamWriter sw = new StreamWriter(pipeServer))
+                {
+                    sw.AutoFlush = true;
+                    sw.WriteLine("Connected!");
+                }
+            }
         }
     }
 }

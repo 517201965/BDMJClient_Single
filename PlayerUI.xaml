@@ -6,8 +6,18 @@
              xmlns:local="clr-namespace:BDMJClient_Single"
              mc:Ignorable="d" 
              d:DesignHeight="260" d:DesignWidth="1900">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Style/Style_MajaList.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
     <Grid Background="CadetBlue">
-        <TextBlock x:Name="Zuowei" FontSize="72" Text="东" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <TextBlock x:Name="Zuowei" FontSize="72" Text="东" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0"/>
+        <!--胡抓杠吃碰出过-->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,0">
             <Button Margin="5,0" Background="{x:Null}" BorderBrush="{x:Null}">
                 <TextBlock Text="胡" FontSize="50"/>
@@ -30,6 +40,21 @@
             <Button Margin="5,0" Background="{x:Null}" BorderBrush="{x:Null}">
                 <TextBlock Text="过" FontSize="50"/>
             </Button>
+        </StackPanel>
+        <!--百搭&骰子-->
+        <Image x:Name="Baida" Source="image/01.png" Height="102" Width="67" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,25,0,0"/>
+        <!--手牌-->
+        <ListView x:Name="Shoupai_ListView" ItemsSource="{Binding}" VerticalAlignment="Bottom" HorizontalAlignment="Center"  />
+        <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            <!--花色-->
+            <ListView x:Name="Huase_ListView" ItemsSource="{Binding}"/>
+            <!--吃碰杠-->
+            <StackPanel Orientation="Horizontal">
+                <ListView x:Name="CPG1_ListView" ItemsSource="{Binding}"/>
+                <ListView x:Name="CPG2_ListView" ItemsSource="{Binding}"/>
+                <ListView x:Name="CPG3_ListView" ItemsSource="{Binding}"/>
+                <ListView x:Name="CPG4_ListView" ItemsSource="{Binding}"/>
+            </StackPanel>
         </StackPanel>
     </Grid>
 </UserControl>
