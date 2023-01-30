@@ -16,28 +16,31 @@
     </UserControl.Resources>
     
     <Grid Background="CadetBlue">
+        <!--座位-->
         <TextBlock x:Name="Zuowei" FontSize="72" Text="东" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,0,0,0"/>
+        <!--庄-->
+        <TextBlock x:Name="Zhuang" FontSize="72" Text="庄" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="100,0,0,0" Visibility="Hidden"/>
         <!--胡抓杠吃碰出过-->
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,0,0">
-            <Button Margin="5,0" Background="{x:Null}" BorderBrush="{x:Null}">
+            <Button x:Name="btnHu" Margin="5,0" Background="{x:Null}" BorderBrush="{x:Null}" Click="btnCommand_Click">
                 <TextBlock Text="胡" FontSize="50"/>
             </Button>
-            <Button Margin="5,0" Background="{x:Null}" BorderBrush="{x:Null}">
+            <Button x:Name="btnZhua" Margin="5,0" Background="{x:Null}" BorderBrush="{x:Null}" Click="btnCommand_Click">
                 <TextBlock Text="抓" FontSize="50"/>
             </Button>
-            <Button Margin="5,0" Background="{x:Null}" BorderBrush="{x:Null}">
+            <Button x:Name="btnGang" Margin="5,0" Background="{x:Null}" BorderBrush="{x:Null}" Click="btnCommand_Click">
                 <TextBlock Text="杠" FontSize="50"/>
             </Button>
-            <Button Margin="5,0" Background="{x:Null}" BorderBrush="{x:Null}">
+            <Button x:Name="btnChi" Margin="5,0" Background="{x:Null}" BorderBrush="{x:Null}" Click="btnCommand_Click">
                 <TextBlock Text="吃" FontSize="50"/>
             </Button>
-            <Button Margin="5,0" Background="{x:Null}" BorderBrush="{x:Null}">
+            <Button x:Name="btnPeng" Margin="5,0" Background="{x:Null}" BorderBrush="{x:Null}" Click="btnCommand_Click">
                 <TextBlock Text="碰" FontSize="50"/>
             </Button>
-            <Button Margin="5,0" Background="{x:Null}" BorderBrush="{x:Null}">
+            <Button x:Name="btnChu" Margin="5,0" Background="{x:Null}" BorderBrush="{x:Null}" Click="btnCommand_Click">
                 <TextBlock Text="出" FontSize="50"/>
             </Button>
-            <Button Margin="5,0" Background="{x:Null}" BorderBrush="{x:Null}">
+            <Button x:Name="btnGuo" Margin="5,0" Background="{x:Null}" BorderBrush="{x:Null}" Click="btnCommand_Click">
                 <TextBlock Text="过" FontSize="50"/>
             </Button>
         </StackPanel>

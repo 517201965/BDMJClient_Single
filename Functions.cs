@@ -18,4 +18,10 @@ namespace BDMJClient_Single
         static public int Bei = 3;
         static public string[] FengXiang = new string[5] { "东", "南", "西", "北", "空" };
     }
+
+    public static class Global
+    {
+        static public string[] Command = new string[4] { string.Empty, string.Empty, string.Empty, string.Empty };
+        static public bool[] isFinished = new bool[4] { false, false, false, false };
+    }
 }
