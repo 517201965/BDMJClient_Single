@@ -25,6 +25,11 @@ namespace BDMJClient_Single
     {
         ObsNotify_Model_Pai Shoupai_List = new ObsNotify_Model_Pai();
         ObsNotify_Model_Pai Huase_list = new ObsNotify_Model_Pai();
+        ObsNotify_Model_Pai CPG1_List = new ObsNotify_Model_Pai();
+        ObsNotify_Model_Pai CPG2_List = new ObsNotify_Model_Pai();
+        ObsNotify_Model_Pai CPG3_List = new ObsNotify_Model_Pai();
+        ObsNotify_Model_Pai CPG4_List = new ObsNotify_Model_Pai();
+        ObsNotify_Model_Pai Chupai_list = new ObsNotify_Model_Pai();
 
         public string strZuowei = string.Empty;
         private int iZuowei = 0;
@@ -33,6 +38,11 @@ namespace BDMJClient_Single
             InitializeComponent();
             Shoupai_ListView.ItemsSource = Shoupai_List.Members;
             Huase_ListView.ItemsSource = Huase_list.Members;
+            CPG1_ListView.ItemsSource = CPG1_List.Members;
+            CPG2_ListView.ItemsSource = CPG2_List.Members;
+            CPG3_ListView.ItemsSource = CPG3_List.Members;
+            CPG4_ListView.ItemsSource = CPG4_List.Members;
+            Chupai_ListView.ItemsSource = Chupai_list.Members;
         }
 
         public void InitialUI(string ServerInfo)
@@ -63,7 +73,7 @@ namespace BDMJClient_Single
             string[] ShoupaiInfos = ShoupaiInfo.Split(',');
             for (int i = CmdNo.Shoupai_First; i <= CmdNo.Shoupai_Last; i++)
             {
-                if(ShoupaiInfos[i] != "99")
+                if (ShoupaiInfos[i] != "99")
                 {
                     Model_Pai pai = new Model_Pai();
                     pai.index = i;
@@ -126,12 +136,14 @@ namespace BDMJClient_Single
             string[] ServerInfos = ServerInfo.Split(';');
             bool isCPGZ = false;
 
+            #region 指令判断
             string CommandInfo = ServerInfos[CmdNo.ServerCommand];
             CommandInfo = CommandInfo.Replace("【等待指令】", "");
             string[] CommandInfos = CommandInfo.Split(',');
-            if (CommandInfos.Length == 3) isCPGZ = false;
-            else isCPGZ = true;
+            if (CommandInfos.Length == 3) isCPGZ = false; //指令长度等于3，杠胡出阶段
+            else isCPGZ = true; //指令长度大于3，吃碰杠抓阶段
 
+            //显示对应的指令按钮
             int iCmd = isCPGZ ? 2 * iZuowei + 2 : 2;
             bool isMyTurn = CommandInfos[iCmd-1] == strZuowei;
             string cmd = isMyTurn ? CommandInfos[0] : "空";
@@ -139,16 +151,19 @@ namespace BDMJClient_Single
             if (CommandInfos[iCmd] == "过")
                 Global.isFinished[iZuowei] = true;
 
-            if (isCPGZ) return;
-            if (!isMyTurn)
+            if (isCPGZ) //吃碰杠抓阶段，结束更新
+                return;
+            if (!isMyTurn) //杠胡出阶段，非我的回合，也结束更新
             {
                 Global.isFinished[iZuowei] = true;
                 return;
             }
+            #endregion
 
+            #region 杠胡出阶段
             //摸牌
             int iShoupai = 0;
-            switch (strZuowei)
+            switch (strZuowei) //确定当前座位
             {
                 case "东": iShoupai = CmdNo.Shoupai_Dong; iZuowei = ZUOWEI.Dong; break;
                 case "南": iShoupai = CmdNo.Shoupai_Nan; iZuowei = ZUOWEI.Nan; break;
@@ -157,59 +172,8 @@ namespace BDMJClient_Single
                 default: iShoupai = CmdNo.Shoupai_Dong; break;
             }
             string ShoupaiInfo = ServerInfos[iShoupai];
-            ShoupaiInfo = ShoupaiInfo.Replace(string.Format("【{0}家手牌】", strZuowei), "");
-            ShoupaiInfo = ShoupaiInfo.Replace("【吃碰杠】", "");
-            ShoupaiInfo = ShoupaiInfo.Replace("【花】", "");
-            ShoupaiInfo = ShoupaiInfo.Replace("【庄】", "");
-            ShoupaiInfo = ShoupaiInfo.Replace("【出牌】", "");
-            string[] ShoupaiInfos = ShoupaiInfo.Split(',');
-            foreach(Model_Pai pai in Shoupai_List.Members)
-            {
-                int i = pai.index;
-                if(pai.Pai !=  ShoupaiInfos[CmdNo.Shoupai_First + i])
-                {
-                    int iPai = Convert.ToInt32(pai.Pai);
-                    int iShoupaiInfo = Convert.ToInt32(ShoupaiInfos[CmdNo.Shoupai_First + i]);
-                    if ((iPai > 50) && (iPai < 60)) 
-                    {
-                        Model_Pai huase = new Model_Pai();
-                        huase.Pai = pai.Pai; 
-                        Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() => Huase_list.Members.Add(huase)));
-                        pai.Pai = ShoupaiInfos[CmdNo.Shoupai_First + i];
-                    }
-                    else if(iShoupaiInfo == 99)
-                    {
-
-                    }
-                    else
-                    {
-
-                    }
-                }
-            }
-            int iLength_LocalShoupai = Shoupai_List.Members.Count;
-            int iLength_ServerShoupai = 0;
-            for (int i = CmdNo.Shoupai_First; i <= CmdNo.Shoupai_Last; i++)
-            {
-                if (ShoupaiInfos[i] != "99")
-                {
-                    iLength_ServerShoupai++;
-                }
-                else
-                    break;
-            }
-            if ((iLength_ServerShoupai - iLength_LocalShoupai) == 1)
-            {
-                Model_Pai pai = new Model_Pai();
-                pai.Pai = ShoupaiInfos[CmdNo.Shoupai_First + iLength_ServerShoupai - 1];
-                pai.index = iLength_ServerShoupai - 1;
-                pai.margin = new Thickness(25, 0, -5, 0);
-                Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() => Shoupai_List.Members.Add(pai)));
-            }
-            else
-            {
-
-            }
+            UpdateShoupaiInfo(ShoupaiInfo);
+            #endregion
         }
 
         void EnableCommandButton(string cmd,string status)
@@ -236,6 +200,149 @@ namespace BDMJClient_Single
             }
         }
 
+        void UpdateShoupaiInfo(string ShoupaiInfo)
+        {
+            ShoupaiInfo = ShoupaiInfo.Replace(string.Format("【{0}家手牌】", strZuowei), "");
+            ShoupaiInfo = ShoupaiInfo.Replace("【吃碰杠】", "");
+            ShoupaiInfo = ShoupaiInfo.Replace("【花】", "");
+            ShoupaiInfo = ShoupaiInfo.Replace("【庄】", "");
+            ShoupaiInfo = ShoupaiInfo.Replace("【出牌】", "");
+            string[] ShoupaiInfos = ShoupaiInfo.Split(','); //手牌信息
+
+            #region 手牌信息
+            int iLength_LocalShoupai = Shoupai_List.Members.Count; //当前UI内的麻将牌数量
+            int iLength_ServerShoupai = 0; //服务器数据内的麻将牌数量，剔除掉99
+            for (int i = CmdNo.Shoupai_First; i <= CmdNo.Shoupai_Last; i++)
+            {
+                if (ShoupaiInfos[i] != "99")
+                    iLength_ServerShoupai++;
+            }
+            int iLength_Diff = iLength_ServerShoupai - iLength_LocalShoupai; //麻将牌差数
+            if (iLength_Diff <= 1) //等于0则更新手牌，等于1则需要更新摸牌
+            {
+                foreach (Model_Pai pai in Shoupai_List.Members) //更新手牌
+                {
+                    int i = pai.index;
+                    if (pai.Pai != ShoupaiInfos[CmdNo.Shoupai_First + i]) //如果UI手牌不等于服务器手牌
+                    {
+                        int iPai = Convert.ToInt32(pai.Pai);
+                        int iShoupaiInfo = Convert.ToInt32(ShoupaiInfos[CmdNo.Shoupai_First + i]);
+                        if ((iPai > 50) && (iPai < 60)) //判断是否 UI手牌为花，是则替换为服务器手牌
+                        {
+                           pai.Pai = ShoupaiInfos[CmdNo.Shoupai_First + i];
+                        }
+                        else if (iShoupaiInfo == 99)
+                        {
+
+                        } //其他情况，说明程序有问题
+                        else
+                        {
+
+                        }
+                    }
+                }
+
+                if (iLength_Diff == 1) //更新摸牌信息
+                {
+                    Model_Pai pai = new Model_Pai();
+                    pai.Pai = ShoupaiInfos[CmdNo.Shoupai_First + iLength_ServerShoupai - 1];
+                    pai.index = iLength_ServerShoupai - 1;
+                    pai.margin = new Thickness(25, 0, -5, 0);
+                    Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() => Shoupai_List.Members.Add(pai)));
+                }
+
+            }
+            else //其他则说明UI与服务器不匹配，发生了吃碰杠的行为，则更新手牌
+            {
+                foreach (Model_Pai pai in Shoupai_List.Members) //更新手牌
+                {
+                    int i = pai.index;
+                    if (pai.Pai != ShoupaiInfos[CmdNo.Shoupai_First + i]) //如果UI手牌不等于服务器手牌
+                    {
+                        int iPai = Convert.ToInt32(pai.Pai);
+                        int iShoupaiInfo = Convert.ToInt32(ShoupaiInfos[CmdNo.Shoupai_First + i]);
+                        if ((iPai > 50) && (iPai < 60)) //判断是否 UI手牌为花，是则替换为服务器手牌
+                        {
+                            pai.Pai = ShoupaiInfos[CmdNo.Shoupai_First + i];
+                        }
+                        else if (iShoupaiInfo == 99)
+                        {
+
+                        } //其他情况，说明程序有问题
+                        else
+                        {
+
+                        }
+                    }
+                }
+            }
+            #endregion
+
+            #region 吃碰杠信息
+            string[] CPG1Info = new string[4];
+            for (int i = CmdNo.CPG1_First; i <= CmdNo.CPG1_Last; i++)
+                CPG1Info[i - CmdNo.CPG1_First] = ShoupaiInfos[i];
+            UpdateListInfo(CPG1Info, CPG1_List);
+
+            string[] CPG2Info = new string[4];
+            for (int i = CmdNo.CPG2_First; i <= CmdNo.CPG2_Last; i++)
+                CPG2Info[i - CmdNo.CPG2_First] = ShoupaiInfos[i];
+            UpdateListInfo(CPG2Info, CPG2_List);
+
+            string[] CPG3Info = new string[4];
+            for (int i = CmdNo.CPG3_First; i <= CmdNo.CPG3_Last; i++)
+                CPG3Info[i - CmdNo.CPG3_First] = ShoupaiInfos[i];
+            UpdateListInfo(CPG3Info, CPG3_List);
+
+            string[] CPG4Info = new string[4];
+            for (int i = CmdNo.CPG4_First; i <= CmdNo.CPG4_Last; i++)
+                CPG4Info[i - CmdNo.CPG4_First] = ShoupaiInfos[i];
+            UpdateListInfo(CPG4Info, CPG4_List);
+            #endregion
+
+            #region 花色信息
+            string[] HuaseInfo = new string[8];
+            for (int i = CmdNo.Hua_First; i <= CmdNo.Hua_Last; i++)
+                HuaseInfo[i - CmdNo.Hua_First] = ShoupaiInfos[i];
+            UpdateListInfo(HuaseInfo, Huase_list);
+            #endregion
+
+            #region 出牌信息
+            int iLength_Chupai = ShoupaiInfos.Length - CmdNo.Chupai_First;
+            string[] ChupaiInfo = new string[iLength_Chupai];
+            for (int i = CmdNo.Chupai_First; i < CmdNo.Chupai_First + iLength_Chupai; i++)
+                ChupaiInfo[i - CmdNo.Chupai_First] = ShoupaiInfos[i];
+            UpdateListInfo(ChupaiInfo, Chupai_list);
+            #endregion
+        }
+
+        void UpdateListInfo(string[] infos, ObsNotify_Model_Pai list)
+        {
+            int iLength_infos = 0;
+            int iLength_List = list.Members.Count;
+            for (int i = 0; i < infos.Length; i++) //非99的麻将牌数量
+            {
+                if ((infos[i] != "99") && (infos[i].Length == 2))
+                    iLength_infos++;
+            }
+            if (iLength_infos == 0) return; //数量为0，则返回
+            if (iLength_infos == iLength_List) return; //数量与UI相同，则返回
+
+            int iLength_Diff = iLength_infos - iLength_List;
+            if (iLength_Diff < 0)
+            {
+                iLength_Diff = iLength_infos;
+                iLength_List = 0;
+            }
+
+            for (int i = iLength_List; i < iLength_List + iLength_Diff; i++)
+            {
+                Model_Pai pai = new Model_Pai();
+                pai.Pai = infos[i];
+                Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() => list.Members.Add(pai)));
+            }
+        }
+
         private void btnCommand_Click(object sender, RoutedEventArgs e)
         {
             string btnName = (sender as Button).Name;
@@ -252,6 +359,8 @@ namespace BDMJClient_Single
 
             //string strZuowei = this.Zuowei.Text;
             int index = 0;
+            int index1 = 0;
+            int index2 = 0;
             if (btnName == "btnHu")//胡
             {
 
@@ -266,17 +375,22 @@ namespace BDMJClient_Single
             }
             else if (btnName == "btnChi")//吃
             {
+                if (iItemsCount != 2) return;
 
             }
             else if (btnName == "btnPeng")//碰
             {
-
+                if (iItemsCount != 2) return;
+                index1 = items[0].index;
+                index2 = items[1].index;
+                clientCmd = string.Format("{0};碰;{1},{2}", strZuowei, index1, index2);
             }
             else if (btnName == "btnChu")//出
             {
                 if (iItemsCount != 1) return;
                 index = items[0].index;
                 clientCmd = string.Format("{0};出;{1}", strZuowei, index);
+                Chupai_list.Members.Add(items[0]);
                 Shoupai_List.Members.Remove(items[0]);
                 UpdateMembersIndex(index);
             }
@@ -299,6 +413,7 @@ namespace BDMJClient_Single
             {
                 if (pai.index > index)
                     pai.index = pai.index - 1;
+                pai.margin = new Thickness(-5, 0, -5, 0);
             }
         }
     }
@@ -342,6 +457,16 @@ namespace BDMJClient_Single
             }
         }
 
+        private double _width = 72;
+        public double width
+        {
+            get { return _width; }
+            set
+            {
+                _width = value;
+                OnPropertyChanged("width");
+            }
+        }
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName)
         {

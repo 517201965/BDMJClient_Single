@@ -48,6 +48,7 @@
         <Image x:Name="Baida" Source="image/01.png" Height="102" Width="67" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,25,0,0"/>
         <!--手牌-->
         <ListView x:Name="Shoupai_ListView" ItemsSource="{Binding}" VerticalAlignment="Bottom" HorizontalAlignment="Center"  />
+        <ListView x:Name="Chupai_ListView" ItemsSource="{Binding}" VerticalAlignment="Top" HorizontalAlignment="Center"  />
         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom">
             <!--花色-->
             <ListView x:Name="Huase_ListView" ItemsSource="{Binding}"/>
