@@ -8,8 +8,8 @@
         Title="百搭麻将-单机版" Height="1080" Width="1920">
     <Grid>
         <local:PlayerUI x:Name="Dong" VerticalAlignment="Top" Height="260"/>
-        <local:PlayerUI x:Name="Bei" VerticalAlignment="Top" Height="260" Margin="0,262,0,0"/>
+        <local:PlayerUI x:Name="Nan" VerticalAlignment="Top" Height="260" Margin="0,262,0,0"/>
         <local:PlayerUI x:Name="Xi" VerticalAlignment="Top" Height="260" Margin="0,524,0,0"/>
-        <local:PlayerUI x:Name="Nan" VerticalAlignment="Top" Height="260" Margin="0,786,0,0"/>
+        <local:PlayerUI x:Name="Bei" VerticalAlignment="Top" Height="260" Margin="0,786,0,0"/>
     </Grid>
 </Window>

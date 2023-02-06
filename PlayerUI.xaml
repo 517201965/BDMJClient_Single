@@ -51,7 +51,7 @@
         <ListView x:Name="Chupai_ListView" ItemsSource="{Binding}" VerticalAlignment="Top" HorizontalAlignment="Center"  />
         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Bottom">
             <!--花色-->
-            <ListView x:Name="Huase_ListView" ItemsSource="{Binding}"/>
+            <ListView x:Name="Huase_ListView" ItemsSource="{Binding}" HorizontalAlignment="Right"/>
             <!--吃碰杠-->
             <StackPanel Orientation="Horizontal">
                 <ListView x:Name="CPG1_ListView" ItemsSource="{Binding}"/>

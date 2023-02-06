@@ -73,18 +73,13 @@ namespace BDMJClient_Single
             string[] ShoupaiInfos = ShoupaiInfo.Split(',');
             for (int i = CmdNo.Shoupai_First; i <= CmdNo.Shoupai_Last; i++)
             {
-                if (ShoupaiInfos[i] != "99")
-                {
-                    Model_Pai pai = new Model_Pai();
-                    pai.index = i;
-                    pai.Pai = ShoupaiInfos[i];
-                    if (i == CmdNo.Shoupai_Last)
-                    {
-                        pai.margin = new Thickness(25, 0, -5, 0);
-                    }
-                    Shoupai_List.Members.Add(pai);
-                }
-
+                Model_Pai pai = new Model_Pai();
+                pai.index = i;
+                pai.Pai = ShoupaiInfos[i];
+                if (i == CmdNo.Shoupai_Last)
+                    pai.margin = new Thickness(25, 0, -5, 0);
+                
+                Shoupai_List.Members.Add(pai);
             }
             //花色
             for (int i = CmdNo.Hua_First; i <= CmdNo.Hua_Last; i++)
@@ -151,12 +146,9 @@ namespace BDMJClient_Single
             if (CommandInfos[iCmd] == "过")
                 Global.isFinished[iZuowei] = true;
 
-            if (isCPGZ) //吃碰杠抓阶段，结束更新
-                return;
-            if (!isMyTurn) //杠胡出阶段，非我的回合，也结束更新
+            if (!isMyTurn) //杠胡出阶段，非我的回合
             {
                 Global.isFinished[iZuowei] = true;
-                return;
             }
             #endregion
 
@@ -209,71 +201,82 @@ namespace BDMJClient_Single
             ShoupaiInfo = ShoupaiInfo.Replace("【出牌】", "");
             string[] ShoupaiInfos = ShoupaiInfo.Split(','); //手牌信息
 
+            #region 手牌信息 屏蔽方法1
+            //int iLength_LocalShoupai = Shoupai_List.Members.Count; //当前UI内的麻将牌数量
+            //int iLength_ServerShoupai = 0; //服务器数据内的麻将牌数量，剔除掉99
+            //for (int i = CmdNo.Shoupai_First; i <= CmdNo.Shoupai_Last; i++)
+            //{
+            //    if (ShoupaiInfos[i] != "99")
+            //        iLength_ServerShoupai++;
+            //}
+            //int iLength_Diff = iLength_ServerShoupai - iLength_LocalShoupai; //麻将牌差数
+            //if (iLength_Diff <= 1) //等于0则更新手牌，等于1则需要更新摸牌
+            //{
+            //    foreach (Model_Pai pai in Shoupai_List.Members) //更新手牌
+            //    {
+            //        int i = pai.index;
+            //        if (pai.Pai != ShoupaiInfos[CmdNo.Shoupai_First + i]) //如果UI手牌不等于服务器手牌
+            //        {
+            //            int iPai = Convert.ToInt32(pai.Pai);
+            //            int iShoupaiInfo = Convert.ToInt32(ShoupaiInfos[CmdNo.Shoupai_First + i]);
+            //            if ((iPai > 50) && (iPai < 60)) //判断是否 UI手牌为花，是则替换为服务器手牌
+            //            {
+            //               pai.Pai = ShoupaiInfos[CmdNo.Shoupai_First + i];
+            //            }
+            //            else if (iShoupaiInfo == 99)
+            //            {
+
+            //            } //其他情况，说明程序有问题
+            //            else
+            //            {
+
+            //            }
+            //        }
+            //    }
+
+            //    if (iLength_Diff == 1) //更新摸牌信息
+            //    {
+            //        Model_Pai pai = new Model_Pai();
+            //        pai.Pai = ShoupaiInfos[CmdNo.Shoupai_First + iLength_ServerShoupai - 1];
+            //        pai.index = iLength_ServerShoupai - 1;
+            //        pai.margin = new Thickness(25, 0, -5, 0);
+            //        Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() => Shoupai_List.Members.Add(pai)));
+            //    }
+
+            //}
+            //else //其他则说明UI与服务器不匹配，发生了吃碰杠的行为，则更新手牌
+            //{
+            //    foreach (Model_Pai pai in Shoupai_List.Members) //更新手牌
+            //    {
+            //        int i = pai.index;
+            //        if (pai.Pai != ShoupaiInfos[CmdNo.Shoupai_First + i]) //如果UI手牌不等于服务器手牌
+            //        {
+            //            int iPai = Convert.ToInt32(pai.Pai);
+            //            int iShoupaiInfo = Convert.ToInt32(ShoupaiInfos[CmdNo.Shoupai_First + i]);
+            //            if ((iPai > 50) && (iPai < 60)) //判断是否 UI手牌为花，是则替换为服务器手牌
+            //            {
+            //                pai.Pai = ShoupaiInfos[CmdNo.Shoupai_First + i];
+            //            }
+            //            else if (iShoupaiInfo == 99)
+            //            {
+            //                pai.Pai = ShoupaiInfos[CmdNo.Shoupai_First + i];
+            //            } //其他情况，说明程序有问题
+            //            else
+            //            {
+
+            //            }
+            //        }
+            //    }
+            //}
+            #endregion
+
             #region 手牌信息
-            int iLength_LocalShoupai = Shoupai_List.Members.Count; //当前UI内的麻将牌数量
-            int iLength_ServerShoupai = 0; //服务器数据内的麻将牌数量，剔除掉99
-            for (int i = CmdNo.Shoupai_First; i <= CmdNo.Shoupai_Last; i++)
+            foreach (Model_Pai pai in Shoupai_List.Members) //更新手牌
             {
-                if (ShoupaiInfos[i] != "99")
-                    iLength_ServerShoupai++;
-            }
-            int iLength_Diff = iLength_ServerShoupai - iLength_LocalShoupai; //麻将牌差数
-            if (iLength_Diff <= 1) //等于0则更新手牌，等于1则需要更新摸牌
-            {
-                foreach (Model_Pai pai in Shoupai_List.Members) //更新手牌
+                int i = pai.index;
+                if (pai.Pai != ShoupaiInfos[CmdNo.Shoupai_First + i]) //如果UI手牌不等于服务器手牌
                 {
-                    int i = pai.index;
-                    if (pai.Pai != ShoupaiInfos[CmdNo.Shoupai_First + i]) //如果UI手牌不等于服务器手牌
-                    {
-                        int iPai = Convert.ToInt32(pai.Pai);
-                        int iShoupaiInfo = Convert.ToInt32(ShoupaiInfos[CmdNo.Shoupai_First + i]);
-                        if ((iPai > 50) && (iPai < 60)) //判断是否 UI手牌为花，是则替换为服务器手牌
-                        {
-                           pai.Pai = ShoupaiInfos[CmdNo.Shoupai_First + i];
-                        }
-                        else if (iShoupaiInfo == 99)
-                        {
-
-                        } //其他情况，说明程序有问题
-                        else
-                        {
-
-                        }
-                    }
-                }
-
-                if (iLength_Diff == 1) //更新摸牌信息
-                {
-                    Model_Pai pai = new Model_Pai();
-                    pai.Pai = ShoupaiInfos[CmdNo.Shoupai_First + iLength_ServerShoupai - 1];
-                    pai.index = iLength_ServerShoupai - 1;
-                    pai.margin = new Thickness(25, 0, -5, 0);
-                    Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Background, new Action(() => Shoupai_List.Members.Add(pai)));
-                }
-
-            }
-            else //其他则说明UI与服务器不匹配，发生了吃碰杠的行为，则更新手牌
-            {
-                foreach (Model_Pai pai in Shoupai_List.Members) //更新手牌
-                {
-                    int i = pai.index;
-                    if (pai.Pai != ShoupaiInfos[CmdNo.Shoupai_First + i]) //如果UI手牌不等于服务器手牌
-                    {
-                        int iPai = Convert.ToInt32(pai.Pai);
-                        int iShoupaiInfo = Convert.ToInt32(ShoupaiInfos[CmdNo.Shoupai_First + i]);
-                        if ((iPai > 50) && (iPai < 60)) //判断是否 UI手牌为花，是则替换为服务器手牌
-                        {
-                            pai.Pai = ShoupaiInfos[CmdNo.Shoupai_First + i];
-                        }
-                        else if (iShoupaiInfo == 99)
-                        {
-
-                        } //其他情况，说明程序有问题
-                        else
-                        {
-
-                        }
-                    }
+                    pai.Pai = ShoupaiInfos[CmdNo.Shoupai_First + i];
                 }
             }
             #endregion
@@ -361,6 +364,8 @@ namespace BDMJClient_Single
             int index = 0;
             int index1 = 0;
             int index2 = 0;
+            int index3 = 0;
+            int index4 = 0;
             if (btnName == "btnHu")//胡
             {
 
@@ -371,12 +376,32 @@ namespace BDMJClient_Single
             }
             else if (btnName == "btnGang")//杠
             {
-
+                bool isZiGang = btnZhua.Visibility == Visibility.Hidden; //是自杠还是抓杠
+                if ((iItemsCount == 3) && (isZiGang == false))
+                {
+                    index1 = items[0].index;
+                    index2 = items[1].index;
+                    index3 = items[2].index;
+                    clientCmd = string.Format("{0};杠;{1},{2},{3}", strZuowei, index1, index2, index3);
+                    EnableCommandButton("空", "等");
+                }
+                else if ((iItemsCount == 4) && (isZiGang == true))
+                {
+                    index1 = items[0].index;
+                    index2 = items[1].index;
+                    index3 = items[2].index;
+                    index4 = items[3].index;
+                    clientCmd = string.Format("{0};杠;{1},{2},{3},{4}", strZuowei, index1, index2, index3, index4);
+                    EnableCommandButton("空", "等");
+                }
             }
             else if (btnName == "btnChi")//吃
             {
                 if (iItemsCount != 2) return;
-
+                index1 = items[0].index;
+                index2 = items[1].index;
+                clientCmd = string.Format("{0};吃;{1},{2}", strZuowei, index1, index2);
+                EnableCommandButton("空", "等");
             }
             else if (btnName == "btnPeng")//碰
             {
@@ -384,15 +409,14 @@ namespace BDMJClient_Single
                 index1 = items[0].index;
                 index2 = items[1].index;
                 clientCmd = string.Format("{0};碰;{1},{2}", strZuowei, index1, index2);
+                EnableCommandButton("空", "等");
             }
             else if (btnName == "btnChu")//出
             {
                 if (iItemsCount != 1) return;
                 index = items[0].index;
                 clientCmd = string.Format("{0};出;{1}", strZuowei, index);
-                Chupai_list.Members.Add(items[0]);
-                Shoupai_List.Members.Remove(items[0]);
-                UpdateMembersIndex(index);
+                items[0].Pai = "99";
             }
             else if (btnName == "btnGuo")//过
             {
@@ -402,7 +426,6 @@ namespace BDMJClient_Single
 
             if (string.IsNullOrEmpty(clientCmd) == false)
             {
-                //streamClient.WriteString(clientCmd);
                 Global.Command[iZuowei] = clientCmd;
             }
         }
@@ -442,6 +465,10 @@ namespace BDMJClient_Single
                 string path = "D:\\JayShen\\20 - Work\\10 - Project\\05 - Majiang\\Software\\BDMJClient_Single\\image\\";
                 path += value + ".png";
                 this.PNG = Image_Common.ReadFromPath(path);
+
+                if (_Pai == "99") this.width = 0;
+                else this.width = 72;
+
                 OnPropertyChanged("Pai");
             }
         }
@@ -460,7 +487,10 @@ namespace BDMJClient_Single
         private double _width = 72;
         public double width
         {
-            get { return _width; }
+            get 
+            {
+                return _width; 
+            }
             set
             {
                 _width = value;
